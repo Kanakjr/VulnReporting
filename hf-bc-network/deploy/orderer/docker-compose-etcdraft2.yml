@@ -1,0 +1,93 @@
+# Orderer Raft Mode
+version: '2'
+
+volumes:
+  orderer.example.com:
+  orderer2.example.com:
+  orderer3.example.com:
+
+networks:
+  bc_net:
+    external:
+      name: ${NETWORK_NAME}
+
+services:
+  orderer.example.com:
+    extends:
+      file:   ../base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer.example.com
+    # environment:
+    #   - CORE_OPERATIONS_LISTENADDRESS=orderer.example.com:${ORDERER1_OPS_PORT}
+    #   - CORE_METRICS_PROVIDER=prometheus
+    volumes:
+      - ../../network/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../../network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
+      - ../../network/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
+      - orderer.example.com:/var/hyperledger/production/orderer
+    extra_hosts:
+      - "peer0.org1.example.com:${PEER_ORG1_IP}"
+      - "peer0.org2.example.com:${PEER_ORG2_IP}"
+      - "peer0.org3.example.com:${PEER_ORG3_IP}"
+      - "ca.org1.example.com:${CA_ORG1_IP}"
+      - "ca.org2.example.com:${CA_ORG2_IP}"
+      - "ca.org3.example.com:${CA_ORG3_IP}"
+      - "ca.org4.example.com:${CA_ORG4_IP}"
+    networks:
+      - bc_net
+    ports:
+    - 7050:7050
+    # - ${ORDERER1_OPS_PORT}:${ORDERER1_OPS_PORT}
+  orderer2.example.com: 
+    extends:
+      file:   ../base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer2.example.com
+    # environment:
+    #   - CORE_OPERATIONS_LISTENADDRESS=orderer2.example.com:${ORDERER2_OPS_PORT}
+    #   - CORE_METRICS_PROVIDER=prometheus
+    volumes:
+      - ../../network/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../../network/crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/var/hyperledger/orderer/msp
+      - ../../network/crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/:/var/hyperledger/orderer/tls
+      - orderer2.example.com:/var/hyperledger/production/orderer
+    extra_hosts:
+      - "peer0.org1.example.com:${PEER_ORG1_IP}"
+      - "peer0.org2.example.com:${PEER_ORG2_IP}"
+      - "peer0.org3.example.com:${PEER_ORG3_IP}"
+      - "ca.org1.example.com:${CA_ORG1_IP}"
+      - "ca.org2.example.com:${CA_ORG2_IP}"
+      - "ca.org3.example.com:${CA_ORG3_IP}"
+      - "ca.org4.example.com:${CA_ORG4_IP}"
+    networks:
+      - bc_net
+    ports:
+    - 8050:7050
+    # - ${ORDERER2_OPS_PORT}:${ORDERER2_OPS_PORT}
+  orderer3.example.com:
+    extends:
+      file:   ../base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer3.example.com
+    # environment:
+    #   - CORE_OPERATIONS_LISTENADDRESS=orderer3.example.com:${ORDERER3_OPS_PORT}
+    #   - CORE_METRICS_PROVIDER=prometheus
+    volumes:
+      - ../../network/channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../../network/crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/msp:/var/hyperledger/orderer/msp
+      - ../../network/crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/:/var/hyperledger/orderer/tls
+      - orderer3.example.com:/var/hyperledger/production/orderer
+    extra_hosts:
+      - "peer0.org1.example.com:${PEER_ORG1_IP}"
+      - "peer0.org2.example.com:${PEER_ORG2_IP}"
+      - "peer0.org3.example.com:${PEER_ORG3_IP}"
+      - "ca.org1.example.com:${CA_ORG1_IP}"
+      - "ca.org2.example.com:${CA_ORG2_IP}"
+      - "ca.org3.example.com:${CA_ORG3_IP}"
+      - "ca.org4.example.com:${CA_ORG4_IP}"
+    networks:
+      - bc_net
+    ports:
+    - 9050:7050
+    # - ${ORDERER3_OPS_PORT}:${ORDERER3_OPS_PORT}
+    

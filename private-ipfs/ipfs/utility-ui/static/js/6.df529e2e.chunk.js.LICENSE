@@ -1,0 +1,34 @@
+/**
+ * @license
+ * lodash 3.10.1 (Custom Build) <https://lodash.com/>
+ * Build: `lodash modern -d -o ./index.js`
+ * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <https://lodash.com/license>
+ */
+
+/** PROMISIFY CALLBACK-STYLE FUNCTIONS TO ES6 PROMISES
+*
+* EXAMPLE:
+* const fn = promisify( (callback) => callback(null, "Hello world!") );
+* fn((err, str) => console.log(str));
+* fn().then((str) => console.log(str));
+* //Both functions, will log 'Hello world!'
+*
+* Note: The function you pass, may have any arguments you want, but the latest
+* have to be the callback, which you will call with: next(err, value)
+*
+* @param method: Function/Array/Map = The function(s) to promisify
+* @param options: Map =
+*  "context" (default is function): The context which to apply the called function
+*  "replace" (default is falsy): When passed an array/map, if to replace the original object
+*
+* @return: A promise if passed a function, otherwise the object with the promises
+*
+* @license: MIT
+* @version: 1.0.3
+* @author: Manuel Di Iorio
+**/
+
+/*! https://mths.be/punycode v1.4.1 by @mathias */

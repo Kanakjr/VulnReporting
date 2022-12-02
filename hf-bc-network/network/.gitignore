@@ -1,0 +1,18 @@
+# ignore locally generated crypto config
+/crypto-config/ordererOrganizations
+/crypto-config/peerOrganizations
+# ignore locally generated channel-artifacts
+/channel-artifacts/*.tx
+/channel-artifacts/*.block
+# ignore locally insalled binary files
+/bin/configtxgen
+/bin/configtxlator
+/bin/cryptogen
+/bin/discover
+/bin/fabric-ca-client
+/bin/idemixgen
+/bin/orderer
+/bin/peer
+/bin/fabric-ca-server
+/bin/ledgerutil
+/bin/osnadmin

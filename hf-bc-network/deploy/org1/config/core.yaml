@@ -1,0 +1,16 @@
+###############################################################################
+#
+#    Operations section
+#
+###############################################################################
+operations:
+    # host and port for the operations server
+    listenAddress: 0.0.0.0:9443
+###############################################################################
+#
+#    Metrics section
+#
+###############################################################################
+metrics:
+    # metrics provider is one of statsd, prometheus, or disabled
+    provider: prometheus

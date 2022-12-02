@@ -1,0 +1,8 @@
+# ignore locally generated connection profiles
+/*/_connection-profiles
+test-*
+/local-*
+.env
+*.example
+log.txt
+/*/log.txt

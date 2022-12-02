@@ -1,0 +1,115 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  peer0.org1.example.com:
+    container_name: peer0.org1.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org1.example.com
+      - CORE_PEER_ADDRESS=peer0.org1.example.com:${ORG1_PEER1_PORT}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${ORG1_PEER1_PORT}
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org1.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:${ORG1_PEER1_PORT}
+      - CORE_PEER_LOCALMSPID=Org1MSP
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org1.example.com:${ORG1_OPS_PORT}
+      - CORE_METRICS_PROVIDER=prometheus
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../../network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../../network/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.org1.example.com:/var/hyperledger/production
+    ports:
+      - ${ORG1_PEER1_PORT}:${ORG1_PEER1_PORT}
+      # Expose operations port for health check and metrics.  
+      # Note operations and metrics config is required under config/core.yaml
+      - ${ORG1_OPS_PORT}:${ORG1_OPS_PORT}
+
+  peer0.org2.example.com:
+    container_name: peer0.org2.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org2.example.com
+      - CORE_PEER_ADDRESS=peer0.org2.example.com:${ORG2_PEER1_PORT}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${ORG2_PEER1_PORT}
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org2.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:${ORG2_PEER1_PORT}
+      # enable peer gossip if additional peer is added for org 2 ${ORG2_PEER1_PORT}
+      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7053
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org2.example.com:${ORG2_OPS_PORT}
+      - CORE_METRICS_PROVIDER=prometheus
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../../network/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../../network/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.org2.example.com:/var/hyperledger/production
+    ports:
+      - ${ORG2_PEER1_PORT}:${ORG2_PEER1_PORT}
+      # Expose operations port for health check and metrics.
+      - ${ORG2_OPS_PORT}:${ORG2_OPS_PORT}
+
+  peer0.org3.example.com:
+    container_name: peer0.org3.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org3.example.com
+      - CORE_PEER_ADDRESS=peer0.org3.example.com:${ORG3_PEER1_PORT}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${ORG3_PEER1_PORT}
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org3.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org3.example.com:${ORG3_PEER1_PORT}
+      # enable peer gossip if additional peer is added for org 3 ${ORG3_PEER1_PORT}
+      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org3.example.com:7053
+      - CORE_PEER_LOCALMSPID=Org3MSP
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org3.example.com:${ORG3_OPS_PORT}
+      - CORE_METRICS_PROVIDER=prometheus
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../../network/crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../../network/crypto-config/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.org3.example.com:/var/hyperledger/production
+    ports:
+      - ${ORG3_PEER1_PORT}:${ORG3_PEER1_PORT}
+      # Expose operations port for health check and metrics.
+      - ${ORG3_OPS_PORT}:${ORG3_OPS_PORT}
+
+  peer0.org4.example.com:
+    container_name: peer0.org4.example.com
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.org4.example.com
+      - CORE_PEER_ADDRESS=peer0.org4.example.com:${ORG4_PEER1_PORT}
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:${ORG4_PEER1_PORT}
+      - CORE_PEER_CHAINCODEADDRESS=peer0.org4.example.com:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org4.example.com:${ORG4_PEER1_PORT}
+      # enable peer gossip if additional peer is added for org 4 ${ORG4_PEER1_PORT}
+      # - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org4.example.com:7053
+      - CORE_PEER_LOCALMSPID=Org4MSP
+      - CORE_OPERATIONS_LISTENADDRESS=peer0.org4.example.com:${ORG4_OPS_PORT}
+      - CORE_METRICS_PROVIDER=prometheus
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../../network/crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/msp:/etc/hyperledger/fabric/msp
+        - ../../network/crypto-config/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls:/etc/hyperledger/fabric/tls
+        - peer0.org4.example.com:/var/hyperledger/production
+    ports:
+      - ${ORG4_PEER1_PORT}:${ORG4_PEER1_PORT}
+      # Expose operations port for health check and metrics.
+      - ${ORG4_OPS_PORT}:${ORG4_OPS_PORT}

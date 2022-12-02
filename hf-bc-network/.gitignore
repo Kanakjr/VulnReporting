@@ -1,0 +1,8 @@
+# ignore .env
+.env
+
+# system files
+.DS_Store
+.vscode
+fabric-samples
+chaincode/*

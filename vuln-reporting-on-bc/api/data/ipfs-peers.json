@@ -1,0 +1,12 @@
+{
+    "dev": {
+        "comment": "list of ipfs peers on dev machine",
+        "peers": [
+            {
+                "hostIp": "127.0.0.1",
+                "apiUri": "/ip4/127.0.0.1/tcp/5001",
+                "locatorUrl": "http://127.0.0.1:8080"
+            }
+        ]
+    }
+}

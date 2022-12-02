@@ -1,0 +1,107 @@
+version: '2'
+
+volumes:
+  peer0.org4.example.com:
+  
+networks:
+  bc_net:
+    external:
+      name: ${NETWORK_NAME}
+
+services:
+
+  caOrg4:
+    image: hyperledger/fabric-ca:$CA_IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-org4
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org4.example.com-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/${CA4_PRIVATE_KEY}
+      - FABRIC_CA_SERVER_PORT=9054
+    ports:
+      - "${ORG4_CA_PORT}:9054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.org4.example.com-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/${CA4_PRIVATE_KEY} -b admin:adminpw -d'
+    volumes:
+      - ../../network/crypto-config/peerOrganizations/org4.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_Org4
+    networks:
+      - bc_net
+
+  couchdbOrg4:
+    container_name: couchdbOrg4
+    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+    environment:
+      - COUCHDB_USER=${COUCHDB_ORG4_USER}
+      - COUCHDB_PASSWORD=${COUCHDB_ORG4_PWD}
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+    ports:
+      - "${ORG4_COUCHDB_PORT}:5984"
+    networks:
+      - bc_net
+
+  peer0.org4.example.com:
+    container_name: peer0.org4.example.com
+    extends:
+      file:  ../base/docker-compose-base.yaml
+      service: peer0.org4.example.com
+    environment:
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdbOrg4:5984
+      # The CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME and CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD
+      # provide the credentials for ledger to connect to CouchDB.  The username and password must
+      # match the username and password set for the associated CouchDB.
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=${COUCHDB_ORG4_USER}
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=${COUCHDB_ORG4_PWD}
+    extra_hosts:
+      - "orderer.example.com:${ORDERER1_IP}"
+      - "orderer2.example.com:${ORDERER1_IP}"
+      - "orderer3.example.com:${ORDERER1_IP}"
+      - "peer0.org1.example.com:${PEER_ORG1_IP}"
+      - "peer0.org2.example.com:${PEER_ORG2_IP}"
+      - "peer0.org3.example.com:${PEER_ORG3_IP}"
+    networks:
+      - bc_net
+    depends_on:
+      - couchdbOrg4
+
+  cli_org4:
+    container_name: cli_org4
+    image: hyperledger/fabric-tools:$IMAGE_TAG
+    tty: true
+    stdin_open: true
+    environment:
+      - SYS_CHANNEL=$SYS_CHANNEL
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli_org4
+      - CORE_PEER_ADDRESS=${CORE_PEER_ADDRESS}
+      - CORE_PEER_LOCALMSPID=${LOCALMSPID}
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/peers/peer0.org4.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org4.example.com/users/Admin@org4.example.com/msp
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../../chaincode/:/opt/gopath/src/github.com/chaincode
+        - ../../network/crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ../../network/channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
+    extra_hosts:
+      - "orderer.example.com:${ORDERER1_IP}"
+      - "orderer2.example.com:${ORDERER1_IP}"
+      - "orderer3.example.com:${ORDERER1_IP}"
+      - "peer0.org1.example.com:${PEER_ORG1_IP}"
+      - "peer0.org2.example.com:${PEER_ORG2_IP}"
+      - "peer0.org3.example.com:${PEER_ORG3_IP}"
+    depends_on:
+      - peer0.org4.example.com
+    networks:
+      - bc_net
